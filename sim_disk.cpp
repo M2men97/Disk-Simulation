@@ -217,13 +217,7 @@ public: fsDisk() {
         if(file != MainDir.end()){ // THERE IS A FILE WITH THE SAME NAME IN THE DISK
             return -1;
         }
-        int indexBlock = getFreeBlock(); // GETS THE FIRST FREE BLOCK
-        if(indexBlock == -1) { // DISK IS FULL
-            return -1;
-        }
-        setBitvector(indexBlock,1);
         FsFile* nFsFile = new FsFile(blockSize); // NEW FsFile OBJECT
-        nFsFile->setIndexBlock(indexBlock);
         FileDescriptor* nFD = new FileDescriptor(fileName,nFsFile); // NEW FILE DESCRIPTOR OBJECT
         MainDir.insert({fileName, nFD});
         int deletedIndex = -1;
@@ -302,7 +296,17 @@ public: fsDisk() {
         if(fileSize+len > (blockSize*blockSize)){
             len = (blockSize * blockSize) - fileSize;
         }
-        int offset = file->getUsedBlockOffset(); // IN CASE WE ALREADY WROTE ON THE FILE
+        if(file->getIndexBlock() == -1){ // THAT'S MEAN WE DIDN'T WRITE ON THE FILE
+            int indexBlock = getFreeBlock(); // GETS THE FIRST FREE BLOCK
+            if(indexBlock == -1) { // DISK IS FULL
+                return -1;
+            }
+            setBitvector(indexBlock,1);
+            file->setIndexBlock(indexBlock);
+        }
+        else{
+            int offset = file->getUsedBlockOffset(); // IN CASE WE ALREADY WROTE ON THE FILE
+        }
         int written = 0;
         for(int i=0 ; i<len ; i++){
             int freeSpaceInBlock = blockSize - (fileSize % blockSize);
