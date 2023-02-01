@@ -296,6 +296,7 @@ public: fsDisk() {
         if(fileSize+len > (blockSize*blockSize)){
             len = (blockSize * blockSize) - fileSize;
         }
+        int offset = 0;
         if(file->getIndexBlock() == -1){ // THAT'S MEAN WE DIDN'T WRITE ON THE FILE
             int indexBlock = getFreeBlock(); // GETS THE FIRST FREE BLOCK
             if(indexBlock == -1) { // DISK IS FULL
@@ -305,7 +306,7 @@ public: fsDisk() {
             file->setIndexBlock(indexBlock);
         }
         else{
-            int offset = file->getUsedBlockOffset(); // IN CASE WE ALREADY WROTE ON THE FILE
+            offset = file->getUsedBlockOffset(); // IN CASE WE ALREADY WROTE ON THE FILE
         }
         int written = 0;
         for(int i=0 ; i<len ; i++){
