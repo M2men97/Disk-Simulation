@@ -1,6 +1,5 @@
 Final Project : Index Allocation Simulation 
 Authored by Mo'men Abu Gharbieh
-318314853
 
 ==Description==
 
